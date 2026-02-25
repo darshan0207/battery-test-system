@@ -1,0 +1,412 @@
+<div class="flex flex-col flex-auto w-full">
+    <div
+        class="sm:flex-row items-start sm:items-center sm:justify-between py-8 px-6 md:px-8"
+    >
+        <div class="text-4xl font-extrabold tracking-tight leading-none">
+            Battery Report
+        </div>
+        <!-- <div class="relative inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div> -->
+
+        <form
+            class="flex flex-col mt-4 px-8 pt-6 bg-card shadow rounded overflow-hidden"
+            [formGroup]="reportForm"
+            #reportNgForm="ngForm"
+        >
+            <div
+                class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-6 w-full min-w-0"
+            >
+                <mat-form-field class="flex-auto gt-xs:pr-3">
+                    <mat-label>Panel Name</mat-label>
+                    <mat-select
+                        [placeholder]="'Panel Name'"
+                        (selectionChange)="onPanelChange($event)"
+                        [formControlName]="'panel_name'"
+                    >
+                        <mat-option value="">Select Panel Name</mat-option>
+                        <ng-container
+                            *ngFor="let item of panels; let i = index"
+                        >
+                            <mat-option value="{{ item._id }}">{{
+                                item.panel_name
+                            }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="
+                            reportForm.get('panel_name').hasError('required')
+                        "
+                    >
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="flex-auto gt-xs:pl-3">
+                    <mat-label>Station</mat-label>
+                    <mat-select
+                        [placeholder]="'Station'"
+                        [formControlName]="'station'"
+                    >
+                        <mat-option value="">Select Station</mat-option>
+                        <ng-container
+                            *ngFor="let item of panelItem; let i = index"
+                        >
+                            <mat-option value="{{ item.port }}"
+                                >Station {{ i + 1 }}</mat-option
+                            >
+                        </ng-container>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="reportForm.get('station').hasError('required')"
+                    >
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+                <!-- <mat-form-field class="flex-auto">
+        <mat-label>Battery sr. no</mat-label>
+        <input matInput [placeholder]="'Battery sr. no'"  [formControlName]="'battery_no'">
+        <mat-error *ngIf="reportForm.get('battery_no').hasError('required')">
+            This field is required
+        </mat-error>
+    </mat-form-field> -->
+                <mat-form-field class="flex-auto">
+                    <mat-label>Batch No.</mat-label>
+                    <input
+                        matInput
+                        [placeholder]="'Batch no'"
+                        [formControlName]="'batch_no'"
+                    />
+                    <mat-error
+                        *ngIf="reportForm.get('batch_no').hasError('required')"
+                    >
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+                    <mat-label>Select Date</mat-label>
+                    <input
+                        matInput
+                        [matDatepicker]="picker1"
+                        [formControlName]="'select_date'"
+                    />
+                    <mat-datepicker-toggle
+                        matSuffix
+                        [for]="picker1"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <mat-error
+                        *ngIf="
+                            reportForm.get('select_date').hasError('required')
+                        "
+                    >
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div
+                class="flex items-center justify-end border-t -mx-8 mt-4 px-8 py-3 bg-gray-50 dark:bg-gray-700"
+            >
+                <button
+                    type="submit"
+                    class="px-6 ml-3"
+                    mat-flat-button
+                    [color]="'primary'"
+                    [disabled]="reportForm.disabled"
+                    (click)="onSubmit()"
+                >
+                    <span *ngIf="!reportForm.disabled"> Generate Report </span>
+                    <mat-progress-spinner
+                        *ngIf="reportForm.disabled"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"
+                    ></mat-progress-spinner>
+                </button>
+            </div>
+        </form>
+        <!-- Main -->
+        <div
+            class="inset-0 min-w-0 overflow-auto print:overflow-visible"
+            *ngIf="reportData && reportData.length"
+        >
+            <div class="inline-block text-left print:p-0 mt-5">
+                <div
+                    class="w-full p-8 rounded-2xl shadow bg-card print:w-auto print:rounded-none print:shadow-none print:bg-transparent mb-4"
+                    *ngFor="let data of reportData; let i = index"
+                >
+                    <div class="flex items-start justify-between">
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-1"></div>
+                        <div class="grid auto-cols-max grid-flow-col mb-4">
+                            <div class="flex items-center">
+                                <img
+                                    class="w-8 pr-2 cursor-pointer"
+                                    (click)="generatePdf(i)"
+                                    src="assets/icons/icons8-pdf-48.png"
+                                />
+                                <img
+                                    class="w-8 border-l pl-2 cursor-pointer"
+                                    (click)="generateExcel(i)"
+                                    src="assets/icons/icons8-excel-48.png"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="mb-3 font-medium text-lg">
+                        <b
+                            >Individual Battery Box Test Report (With PT100)
+                            (Without PT)
+                        </b>
+                    </div>
+                    <div class="mb-3 text-secondary">
+                        Battery Box: _ _ _ _ _ _ _ _ Blade: _ _ _ _ _ _ _ _
+                    </div>
+                    <div class="mb-3 text-secondary">
+                        Battery Box Sr No: _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                    </div> -->
+                    <table class="min-w-full border text-center border">
+                        <thead>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    colspan="6"
+                                    class="border-r font-medium text-lg text-secondary px-2 py-2"
+                                >
+                                    Charge & Discharge of Batteries
+                                </th>
+                            </tr>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    colspan="3"
+                                    rowspan="2"
+                                    class="border-r font-medium text-lg text-secondary px-6 py-4"
+                                >
+                                    Charge & Discharge<br />
+                                    <p class="text-white">
+                                        <b>{{ panelname }}</b>
+                                    </p>
+                                    <p class="text-white">
+                                        <b>{{ stationname }}</b>
+                                    </p>
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Initial Charge
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Discharge Test
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Final Charge
+                                </th>
+                            </tr>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Charge max. 3hrs OR cutoff at 100mA
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Discharge @5 to 6 Amp (Max 7 Amp) Duration -
+                                    30 minutes
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Charge Max. 8hrs. OR cutoff at 100mA
+                                </th>
+                            </tr>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    align="left"
+                                    colspan="3"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Start Date Time :
+                                    <span class="text-white">
+                                        {{
+                                            data &&
+                                                data.cycle1 &&
+                                                dateTimeFormat(
+                                                    data.cycle1.createdAt
+                                                )
+                                        }}
+                                    </span>
+                                </th>
+                            </tr>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    align="left"
+                                    colspan="3"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    End Date Time :
+                                    <span class="text-white"
+                                        >{{
+                                            data &&
+                                                dateTimeFormat(data.createdAt)
+                                        }}
+                                    </span>
+                                </th>
+                            </tr>
+                            <tr class="border-b">
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Battery Legend No.
+                                </th>
+                                <!-- <th scope="col" vAlign="top" align="left"
+                                class="border-r  px-6 py-4 font-medium text-lg text-secondary">
+                                Battery sr.no
+                            </th> -->
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Batch No.
+                                </th>
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Battery Voltage before charge ≥ 12.0V
+                                </th>
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Battery Voltage after Initial charge ≥ 12.7V
+                                </th>
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="border-r px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Battery Voltage during discharge (Record
+                                    bat. voltages during discharge between 25 to
+                                    30 min.)
+                                    <br />
+                                    ≥ 10.2V
+                                </th>
+                                <th
+                                    scope="col"
+                                    vAlign="top"
+                                    align="left"
+                                    class="px-6 py-4 font-medium text-lg text-secondary"
+                                >
+                                    Battery Voltage after final charge ≥ 12.7V
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                class="border-b"
+                                align="left"
+                                *ngFor="
+                                    let item of [
+                                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                                        13, 14, 15, 16, 17
+                                    ]
+                                "
+                            >
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    31G{{ item }}
+                                </td>
+                                <!-- <td class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium">
+                                {{reportForm && reportForm.value && reportForm.value.battery_no}}
+                            </td> -->
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    {{
+                                        reportForm &&
+                                            reportForm.value &&
+                                            reportForm.value.batch_no
+                                    }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    {{
+                                        data &&
+                                            data.cycle1 &&
+                                            data.cycle1["b" + item]
+                                            | number : "1.2-2"
+                                    }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    {{
+                                        data &&
+                                            data.cycle2 &&
+                                            data.cycle2["b" + item]
+                                            | number : "1.2-2"
+                                    }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    {{
+                                        data &&
+                                            data.cycle3 &&
+                                            data.cycle3["b" + item]
+                                            | number : "1.2-2"
+                                    }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap border-r px-6 py-4 text-lg font-medium"
+                                >
+                                    {{
+                                        data &&
+                                            data.cycle4 &&
+                                            data.cycle4["b" + item]
+                                            | number : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <div class="mt-4">
+                        <div class="flex items-start mt-4">
+                            <div class="ml-6 text-sm text-secondary">
+                                Note - Batch No. - Write batch no. given by
+                                battery manufacturer or batch no. allotted by
+                                battery box manufacturer.
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

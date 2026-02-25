@@ -1,0 +1,360 @@
+<div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+        <div class="flex items-center justify-between w-full">
+            <div class="text-3xl font-semibold tracking-tight leading-8">
+                Battery Stats
+            </div>
+        </div>
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full min-w-0 mt-4"
+            *ngIf="selectedPanel && selectedPanel.ip_address.length"
+        >
+            <ng-container
+                *ngFor="let data of selectedPanel.ip_address; let i = index"
+            >
+                <div
+                    class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div
+                        class="flex flex-col sm:flex-row items-start justify-between"
+                    >
+                        <div
+                            class="flex gap-6 text-lg font-medium tracking-tight leading-6 truncate"
+                        >
+                            Station {{ i + 1
+                            }}<span
+                                class="tracking-tight flex items-center ml-2"
+                                style="color: rgba(255, 255, 255, 0.6)"
+                                *ngIf="
+                                    selectedPanelData &&
+                                    selectedPanelData[data.port] &&
+                                    selectedPanelData[data.port].temp > 0
+                                "
+                            >
+                                <mat-icon
+                                    class="icon-size-4"
+                                    svgIcon="feather:thermometer"
+                                ></mat-icon>
+                                {{
+                                    selectedPanelData &&
+                                        selectedPanelData[data.port] &&
+                                        selectedPanelData[data.port]?.temp
+                                        | number : "1.2-2"
+                                }}
+                                °C</span
+                            >
+                        </div>
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        >
+                            <span
+                                [ngStyle]="{
+                                    color: getBackgroundColor(
+                                        selectedPanelData &&
+                                            selectedPanelData[data.port] &&
+                                            selectedPanelData[data.port].cycle
+                                    )
+                                }"
+                                >{{
+                                    (selectedPanelData &&
+                                        selectedPanelData[data.port] &&
+                                        selectedPanelData[data.port].hrs) ||
+                                        "00"
+                                }}:{{
+                                    (selectedPanelData &&
+                                        selectedPanelData[data.port] &&
+                                        selectedPanelData[data.port].mins) ||
+                                        "00"
+                                }}:{{
+                                    (selectedPanelData &&
+                                        selectedPanelData[data.port] &&
+                                        selectedPanelData[data.port].sec) ||
+                                        "00"
+                                }}</span
+                            >
+                        </div>
+
+                        <div class="mt-3 sm:mt-0 sm:ml-4 flex">
+                            <div class="mr-5">
+                                <span class="relative flex w-5 h-5">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle1(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                    <span
+                                        class="relative inline-flex rounded-full w-5 h-5"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle1(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                </span>
+                            </div>
+                            <div class="mr-5">
+                                <span class="relative flex w-5 h-5">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle2(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                    <span
+                                        class="relative inline-flex rounded-full w-5 h-5"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle2(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                </span>
+                            </div>
+                            <div class="mr-5">
+                                <span class="relative flex w-5 h-5">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle3(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                    <span
+                                        class="relative inline-flex rounded-full w-5 h-5"
+                                        [ngStyle]="{
+                                            'background-color':
+                                                getBackgroundColorcycle3(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ].cycle
+                                                )
+                                        }"
+                                    ></span>
+                                </span>
+                            </div>
+                            <div
+                                class="ml-5"
+                                *ngIf="
+                                    selectedPanelData &&
+                                    selectedPanelData[data.port] &&
+                                    selectedPanelData[data.port].error
+                                "
+                            >
+                                <span class="relative flex w-5 h-5">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full"
+                                        [ngStyle]="{
+                                            'background-color': 'rgb(239 68 68)'
+                                        }"
+                                    ></span>
+                                    <span
+                                        class="relative inline-flex rounded-full w-5 h-5"
+                                        [ngStyle]="{
+                                            'background-color': 'rgb(239 68 68)'
+                                        }"
+                                    ></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col flex-auto mt-6">
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full min-w-0"
+                        >
+                            <fuse-card
+                                class="flex flex-col w-full min-h-full h-12 items-center justify-center px-1 rounded-2xl bg-gray-100 dark:bg-white dark:bg-opacity-5"
+                                *ngFor="
+                                    let item of [
+                                        1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 16,
+                                        5, 11, 17, 6, 12
+                                    ]
+                                "
+                            >
+                                <div
+                                    class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-1 w-full min-w-0 p-1"
+                                >
+                                    <div class="p-0 leading-none">
+                                        <div
+                                            class="text-sm font-medium text-secondary text-sm"
+                                        >
+                                            BV-{{ item }}
+                                        </div>
+                                        <div
+                                            class="mt-1 font-mono text-md"
+                                            [style.color]="
+                                                getColor(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ]['b' + item],
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ]['vcheck']
+                                                )
+                                            "
+                                        >
+                                            {{
+                                                selectedPanelData &&
+                                                selectedPanelData[data.port]
+                                                    ? (selectedPanelData[
+                                                          data.port
+                                                      ]["b" + item]
+                                                      | number : "1.2-2")
+                                                    : 0
+                                            }}
+                                        </div>
+                                    </div>
+                                    <div class="p-0 leading-none">
+                                        <div
+                                            class="text-sm font-medium text-secondary text-sm"
+                                        >
+                                            CV-{{ item }}
+                                        </div>
+                                        <div
+                                            class="mt-1 font-mono text-md"
+                                            [style.color]="
+                                                getColor(
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ]['c' + item],
+                                                    selectedPanelData &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ] &&
+                                                        selectedPanelData[
+                                                            data.port
+                                                        ]['cvcheck']
+                                                )
+                                            "
+                                        >
+                                            {{
+                                                selectedPanelData &&
+                                                selectedPanelData[data.port]
+                                                    ? (selectedPanelData[
+                                                          data.port
+                                                      ]["c" + item]
+                                                      | number : "1.2-2")
+                                                    : 0
+                                            }}
+                                        </div>
+                                    </div>
+                                    <div class="p-0 leading-none">
+                                        <div
+                                            class="text-sm font-medium text-secondary text-sm"
+                                        >
+                                            CC/DC-{{ item }}
+                                        </div>
+                                        <div class="mt-1 font-mono text-md">
+                                            {{
+                                                selectedPanelData &&
+                                                selectedPanelData[data.port]
+                                                    ? (selectedPanelData[
+                                                          data.port
+                                                      ]["a" + item]
+                                                      | number : "1.2-2")
+                                                    : 0
+                                            }}
+                                        </div>
+                                    </div>
+                                    <!-- <div class="p-1 leading-none rounded border">
+                                                    <div class="text-sm font-medium text-secondary text-sm">e{{item}}</div>
+                                                    <div class="mt-1 font-mono text-md">{{selectedPanelData ?decimalPipeValue(selectedPanelData["e"+ item]): 0}}</div>
+                                                </div> -->
+                                </div>
+                            </fuse-card>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-6 w-full min-w-0 mt-12"
+        >
+            <ng-container *ngFor="let panel of data">
+                <div
+                    class="flex flex-col flex-auto p-2 bg-card shadow rounded-2xl overflow-hidden cursor-pointer"
+                    [ngClass]="{
+                        'bg-primary':
+                            panel.panel_name === selectedPanel.panel_name
+                    }"
+                    (click)="onChangeIP(panel)"
+                >
+                    <div class="flex items-start justify-center">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        >
+                            {{ panel.panel_name }}
+                        </div>
+                    </div>
+                    <!-- <div class="flex flex-col w-full text-secondary text-sm mt-3">
+                    <ng-container *ngFor="let item of panel.ip_address">
+                        <div class="
+                        flex items-center py-2 px-2 font-medium rounded-full cursor-pointer" 
+                          (click)="onChangeIP(item.ip)"
+                         [ngClass]="{'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-400': item.ip === selectedIPAddress
+                               }">
+                            <div class="leading-5 select-none text-default">{{item.ip}}</div>
+                        </div>
+                        </ng-container>
+                </div> -->
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
